@@ -21,7 +21,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans">
-      {/* Header */}
       <header className="border-b border-neutral-800 px-6 py-4 flex justify-between items-center sticky top-0 bg-neutral-950/80 backdrop-blur-md z-10">
         <h1 className="text-xl font-bold tracking-widest uppercase bg-gradient-to-r from-sky-400 to-indigo-500 bg-clip-text text-transparent">
           Optical Max
@@ -31,7 +30,6 @@ export default function Home() {
         </span>
       </header>
 
-      {/* Hero Section */}
       <section className="px-6 py-12 text-center max-w-2xl mx-auto">
         <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">
           Elevate Your Vision
@@ -41,7 +39,6 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Products Grid */}
       <main className="max-w-6xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((p) => (
@@ -87,4 +84,3 @@ export default function Home() {
     </div>
   );
                     }
-            
