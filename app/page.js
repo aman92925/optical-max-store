@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { ShoppingBag, Sparkles } from 'lucide-react';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -10,77 +9,68 @@ const supabase = createClient(
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      const { data } = await supabase.from('products').select('*');
-      setProducts(data || []);
+    async function loadProducts() {
+      const { data, error } = await supabase.from('products').select('*');
+      if (!error && data) {
+        setProducts(data);
+      }
+      setLoading(false);
     }
-    fetchData();
+    loadProducts();
   }, []);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans">
-      <header className="border-b border-neutral-800 px-6 py-4 flex justify-between items-center sticky top-0 bg-neutral-950/80 backdrop-blur-md z-10">
-        <h1 className="text-xl font-bold tracking-widest uppercase bg-gradient-to-r from-sky-400 to-indigo-500 bg-clip-text text-transparent">
-          Optical Max
-        </h1>
-        <span className="text-xs px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-full flex items-center gap-1">
-          <Sparkles size={12} /> Premium Eyewear
-        </span>
+    <div style={{ fontFamily: 'sans-serif', backgroundColor: '#0f172a', minHeight: '100vh', color: '#fff', padding: '20px' }}>
+      {/* Navbar */}
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '15px', maxWidth: '1000px', margin: '0 auto' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0, color: '#38bdf8' }}>Optical Max</h1>
+        <span style={{ fontSize: '14px', color: '#94a3b8' }}>Modern Eyewear Store</span>
       </header>
 
-      <section className="px-6 py-12 text-center max-w-2xl mx-auto">
-        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">
-          Elevate Your Vision
-        </h2>
-        <p className="text-neutral-400 text-sm md:text-base">
-          Precision crafted luxury frames designed for ultimate comfort and clarity.
-        </p>
-      </section>
+      {/* Hero */}
+      <div style={{ textAlign: 'center', margin: '40px 0' }}>
+        <h2 style={{ fontSize: '32px', marginBottom: '10px' }}>Our Frame Collection</h2>
+        <p style={{ color: '#94a3b8', margin: 0 }}>High quality frames at the best prices</p>
+      </div>
 
-      <main className="max-w-6xl mx-auto px-6 pb-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((p) => (
-            <div
-              key={p.id}
-              className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden hover:border-neutral-700 transition duration-300 flex flex-col justify-between shadow-lg"
-            >
-              {p.image_url ? (
-                <img
-                  src={p.image_url}
-                  alt={p.name}
-                  className="w-full h-56 object-cover bg-neutral-900"
-                />
-              ) : (
-                <div className="w-full h-56 bg-neutral-800 flex items-center justify-center text-neutral-500 text-sm">
-                  No Image Available
-                </div>
-              )}
-              
-              <div className="p-5 flex flex-col flex-grow justify-between">
+      {/* Products List */}
+      <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
+        {loading ? (
+          <p style={{ textAlign: 'center', gridColumn: '1/-1' }}>Loading products...</p>
+        ) : products.length === 0 ? (
+          <p style={{ textAlign: 'center', gridColumn: '1/-1', color: '#94a3b8' }}>No products found.</p>
+        ) : (
+          products.map((item) => (
+            <div key={item.id} style={{ backgroundColor: '#1e293b', borderRadius: '12px', overflow: 'hidden', border: '1px solid #334155', display: 'flex', flexDirection: 'column' }}>
+              <img
+                src={item.image_url || 'https://images.unsplash.com/photo-1572635196237-14b3f281503f'}
+                alt={item.name}
+                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+              />
+              <div style={{ padding: '15px', display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'space-between' }}>
                 <div>
-                  <span className="text-xs font-semibold text-sky-400 uppercase tracking-wider">
-                    {p.category || 'Eyewear'}
-                  </span>
-                  <h3 className="text-lg font-semibold text-white mt-1">
-                    {p.name}
-                  </h3>
+                  <span style={{ fontSize: '12px', color: '#38bdf8', textTransform: 'uppercase', fontWeight: 'bold' }}>{item.category || 'Eyewear'}</span>
+                  <h3 style={{ fontSize: '18px', margin: '8px 0 4px 0' }}>{item.name}</h3>
                 </div>
-
-                <div className="flex items-center justify-between mt-6 pt-4 border-t border-neutral-800">
-                  <span className="text-xl font-bold text-white">
-                    ₹{p.price}
-                  </span>
-                  <button className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-black font-semibold px-4 py-2 rounded-xl transition text-sm">
-                    <ShoppingBag size={16} /> Buy Now
-                  </button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px' }}>
+                  <span style={{ fontSize: '20px', fontWeight: 'bold' }}>₹{item.price}</span>
+                  <a
+                    href={`https://wa.me/?text=Hi,%20I%20want%20to%20buy%20${encodeURIComponent(item.name)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ backgroundColor: '#38bdf8', color: '#000', padding: '8px 14px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '14px' }}
+                  >
+                    Order
+                  </a>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </main>
+          ))
+        )}
+      </div>
     </div>
   );
-                    }
+}
